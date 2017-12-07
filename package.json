@@ -18,7 +18,9 @@
   },
   "homepage": "https://github.com/book-lab/server#readme",
   "dependencies": {
+    "dotenv": "^4.0.0",
     "express": "^4.16.2",
+    "fs": "0.0.1-security",
     "pg": "^7.4.0"
   }
 }

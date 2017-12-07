@@ -2,9 +2,11 @@ require('dotenv').config();
 const express = require('express');
 const app = express();
 const pg = require('pg');
-
-const PORT = process.env.PORT;
+const fs = require('fs');
+// process.env.PORT
+const PORT = 3000;
 const client = new pg.Client(process.env.DATABASE_URL);
+// client.connect();
 
 app.get('/api/v1/books', (req,resp) => {
     //query database for all books 
@@ -31,11 +33,14 @@ app.listen(PORT, () =>{
 function loadBooks() {
     fs.readFile('./book.json', (err, fd) => {
         JSON.parse(fd.toString()).forEach(ele => {
+        
             client.query(
-                'INSERT INTO books(title, author, isbn, "image_url", description) VALUES($1, $2, $3, $4, $5) ON CONFLICT DO NOTHING',
+                'INSERT INTO books(title, author, isbn, image_url, description) VALUES($1, $2, $3, $4, $5)',
                 [ele.title, ele.author, ele.isbn, ele.image_url, ele.description ]
             )
                 .catch(console.error);
         });
     });
 }
+
+loadBooks();
