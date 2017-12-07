@@ -3,19 +3,19 @@ const express = require('express');
 const app = express();
 const pg = require('pg');
 const fs = require('fs');
-// 
-const PORT = process.env.PORT;
+// process.env.PORT
+const PORT = 3000;
 const client = new pg.Client(process.env.DATABASE_URL);
 client.connect();
 
-app.get('/api/v1/books', (req,resp) => {
+app.get('/api/v1/books', (req,res) => {
     //query database for all books 
-    client.query(`SELECT book_id, title, author, and image_url FROM books;`)
+    client.query(`SELECT title, author, image_url FROM books;`)
         .then(data => res.send(data.rows));
     // res.send('will automatically send book data');
 });
 
-app.get('/api/v1/:id', (req,resp) => {
+app.get('/api/v1/:id', (req,res) => {
     //query database for all books 
     client.query(`SELECT * FROM books WHERE author_id = $1;`, [req.params.id])
         .then(data => res.send(data.rows));
