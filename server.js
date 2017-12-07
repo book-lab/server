@@ -25,3 +25,17 @@ app.get('/api/v1/:id', (req,resp) => {
 app.listen(PORT, () =>{
     console.log(`listening for api to port ${PORT}`);
 });
+
+//////////////////////////
+
+function loadBooks() {
+    fs.readFile('./book.json', (err, fd) => {
+        JSON.parse(fd.toString()).forEach(ele => {
+            client.query(
+                'INSERT INTO books(title, author, isbn, "image_url", description) VALUES($1, $2, $3, $4, $5) ON CONFLICT DO NOTHING',
+                [ele.title, ele.author, ele.isbn, ele.image_url, ele.description ]
+            )
+                .catch(console.error);
+        });
+    });
+}
