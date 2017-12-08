@@ -4,11 +4,12 @@ const app = express();
 const pg = require('pg');
 const fs = require('fs');
 const cors = require('cors');
-app.use(cors());
 // 
 const PORT = process.env.PORT;
 const client = new pg.Client(process.env.DATABASE_URL);
 client.connect();
+
+app.use(cors());
 
 app.get('/api/v1/books', (req,res) => {
     //query database for all books 
@@ -20,7 +21,8 @@ app.get('/api/v1/books', (req,res) => {
 app.get('/api/v1/:id', (req,res) => {
     //query database for all books 
     client.query(`SELECT * FROM books WHERE author_id = $1;`, [req.params.id])
-        .then(data => res.send(data.rows));
+        .then(data => res.send(data.rows))
+        .catch(console.error);
     
 });
 
