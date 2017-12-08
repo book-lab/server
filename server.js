@@ -3,6 +3,8 @@ const express = require('express');
 const app = express();
 const pg = require('pg');
 const fs = require('fs');
+const cors = require('cors');
+app.use(cors());
 // 
 const PORT = process.env.PORT;
 const client = new pg.Client(process.env.DATABASE_URL);
