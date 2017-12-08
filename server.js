@@ -3,8 +3,8 @@ const express = require('express');
 const app = express();
 const pg = require('pg');
 const fs = require('fs');
-// process.env.PORT
-const PORT = 3000;
+// 
+const PORT = process.env.PORT;
 const client = new pg.Client(process.env.DATABASE_URL);
 client.connect();
 
