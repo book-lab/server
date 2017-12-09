@@ -12,7 +12,7 @@ client.connect();
 
 app.get('/api/v1/books', (req,res) => {
     //query database for all books 
-    client.query(`SELECT title, author, image_url FROM books;`)
+    client.query(`SELECT book_id, title, author, isbn, image_url, description FROM books;`)
         .then(data => res.send(data.rows));
     // res.send('will automatically send book data');
 });
