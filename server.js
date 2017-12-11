@@ -17,9 +17,9 @@ app.get('/api/v1/books', (req,res) => {
     // res.send('will automatically send book data');
 });
 
-app.get('/api/v1/:id', (req,res) => {
-    //query database for all books 
-    client.query(`SELECT * FROM books WHERE author_id = $1;`, [req.params.id])
+app.get('/api/v1/book/:id', (req,res) => {
+    //query database for single books 
+    client.query(`SELECT * FROM books WHERE book_id = $1;`, [req.params.id])
         .then(data => res.send(data.rows));
     
 });
