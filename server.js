@@ -5,6 +5,8 @@ const pg = require('pg');
 const fs = require('fs');
 const cors = require('cors');
 const bodyParser = require('body-parser');
+const G_API_KEY = process.env.GOOGLE_API_KEY;
+const superagent = require('superagent');
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -28,6 +30,29 @@ app.get('/api/v1/book/:id', (req,res) => {
     client.query(`SELECT * FROM books WHERE book_id = $1;`, [req.params.id])
         .then(data => res.send(data.rows));
     
+});
+
+app.get('/search', (req, res) => {
+    
+    const googleUrl = 'https://www.googleapis.com/books/v1/volumes?q=';
+    const searchBook = req.query.search;
+
+    superagent.get(`${googleUrl}${searchBook}&key=${G_API_KEY}`)
+        .end((err, resp) => {
+                console.log('hello');
+                const topTen = resp.body.items.slice(0,10).map( book =>{
+                    return {
+                        title: book.volumeInfo.title,
+                        author: book.volumeInfo.authors[0],
+                        isbn: book.volumeInfo.industryIdentifiers[0].identifier,
+                        image_url: book.volumeInfo.imageLinks.thumbnail,
+                        description: book.volumeInfo.description
+
+
+                    };
+                });
+            res.send(topTen);
+        });
 });
 
 app.post('/api/v1/new', (req, res) => {
@@ -64,7 +89,7 @@ app.delete('/api/v1/books/:id', (req, res) => {
     console.log('inside the server delete route')
     client.query(`
     DELETE FROM books
-    WHERE book_id = $1`,
+    WHERE book_id = $1;`,
     [
         req.params.id
     ])
