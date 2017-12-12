@@ -4,7 +4,12 @@ const app = express();
 const pg = require('pg');
 const fs = require('fs');
 const cors = require('cors');
+const bodyParser = require('body-parser');
+
 app.use(cors());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended: true}));
+
 // 
 const PORT = process.env.PORT;
 const client = new pg.Client(process.env.DATABASE_URL);
@@ -27,7 +32,7 @@ app.get('/api/v1/book/:id', (req,res) => {
 
 app.post('/api/v1/new', (req, res) => {
     client.query(`
-    INSERT INTO books (title, author, isbn, image_url, description)
+    INSERT INTO books (title, author, isbn, "image_url", description)
     VALUES ($1, $2, $3, $4, $5);
     `, [
         req.body.title,
@@ -36,7 +41,7 @@ app.post('/api/v1/new', (req, res) => {
         req.body.image_url,
         req.body.description
     ])
-    .then(data => res.status(201).send(data.rows))
+    .then(data => res.status(200).send(data.rows))
     .catch(console.error);
 });
 
