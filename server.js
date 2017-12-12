@@ -45,6 +45,33 @@ app.post('/api/v1/new', (req, res) => {
     .catch(console.error);
 });
 
+app.put('/api/v1/books/:id', (req, res) => {
+    client.query(`UPDATE books SET title = $1, author = $2, isbn = $3, image_url = $4, description = $5 WHERE book_id = $6`, 
+    [
+        req.body.title,
+        req.body.author,
+        req.body.isbn,
+        req.body.image_url,
+        req.body.description,
+        req.params.id
+    ])
+    .then(data => res.status(200).send('book updated'))
+    .catch(console.error);
+});
+
+
+app.delete('/api/v1/books/:id', (req, res) => {
+    console.log('inside the server delete route')
+    client.query(`
+    DELETE FROM books
+    WHERE book_id = $1`,
+    [
+        req.params.id
+    ])
+    .then(data => res.status(204).send('book deleted'))
+    .catch(console.error);
+});
+
 
 
 app.listen(PORT, () =>{
