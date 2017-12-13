@@ -5,7 +5,7 @@ const pg = require('pg');
 const fs = require('fs');
 const cors = require('cors');
 const bodyParser = require('body-parser');
-const G_API_KEY = process.env.GOOGLE_API_KEY;
+const G_API_KEY = process.env.G_API_KEY;
 const superagent = require('superagent');
 
 app.use(cors());
@@ -32,25 +32,33 @@ app.get('/api/v1/book/:id', (req,res) => {
     
 });
 
-app.get('/search', (req, res) => {
+app.get('/api/v1/search', (req, res) => {
     
-    const googleUrl = 'https://www.googleapis.com/books/v1/volumes?q=';
+    const googleUrl = 'https://www.googleapis.com/books/v1/volumes?q=intitle:';
     const searchBook = req.query.search;
-
-    superagent.get(`${googleUrl}${searchBook}&key=${G_API_KEY}`)
+    console.log(`${googleUrl}dog&key=${G_API_KEY}`);
+    console.log(req.params);
+    console.log(req.query); //figure out how we will implement query and where
+    const string = `${googleUrl}dog&key=${G_API_KEY}`;
+    console.log(string);
+    superagent.get(string)
         .end((err, resp) => {
-                console.log('hello');
+                console.log('this is console logging ' , resp.body);
                 const topTen = resp.body.items.slice(0,10).map( book =>{
-                    return {
+                    let returnData = {
+                        
                         title: book.volumeInfo.title,
-                        author: book.volumeInfo.authors[0],
-                        isbn: book.volumeInfo.industryIdentifiers[0].identifier,
+                        author: book.volumeInfo.authors ? book.volumeInfo.authors[0] : 'NA',
+                        isbn: book.volumeInfo.industryIdentifiers ? book.volumeInfo.industryIdentifiers[0].identifier : 'NA',
                         image_url: book.volumeInfo.imageLinks.thumbnail,
                         description: book.volumeInfo.description
 
 
                     };
+                    return returnData;
                 });
+                console.log(topTen);
+                
             res.send(topTen);
         });
 });
