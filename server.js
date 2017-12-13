@@ -39,7 +39,7 @@ app.get('/api/v1/search', (req, res) => {
     console.log(`${googleUrl}dog&key=${G_API_KEY}`);
     console.log(req.params);
     console.log(req.query); //figure out how we will implement query and where
-    const string = `${googleUrl}dog&key=${G_API_KEY}`;
+    const string = `${googleUrl}cat&key=${G_API_KEY}`;
     console.log(string);
     superagent.get(string)
         .end((err, resp) => {
@@ -50,8 +50,8 @@ app.get('/api/v1/search', (req, res) => {
                         title: book.volumeInfo.title,
                         author: book.volumeInfo.authors ? book.volumeInfo.authors[0] : 'NA',
                         isbn: book.volumeInfo.industryIdentifiers ? book.volumeInfo.industryIdentifiers[0].identifier : 'NA',
-                        image_url: book.volumeInfo.imageLinks.thumbnail,
-                        description: book.volumeInfo.description
+                        image_url: book.volumeInfo.imageLinks.thumbnail ? book.volumeInfo.imageLinks.thumbnail : 'NA' ,
+                        description: book.volumeInfo.description ? book.volumeInfo.description : 'NA' 
 
 
                     };
