@@ -5,6 +5,8 @@ const pg = require('pg');
 const fs = require('fs');
 const cors = require('cors');
 const bodyParser = require('body-parser');
+const G_API_KEY = process.env.G_API_KEY;
+const superagent = require('superagent');
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -28,6 +30,37 @@ app.get('/api/v1/book/:id', (req,res) => {
     client.query(`SELECT * FROM books WHERE book_id = $1;`, [req.params.id])
         .then(data => res.send(data.rows));
     
+});
+
+app.get('/api/v1/search', (req, res) => {
+    
+    const googleUrl = 'https://www.googleapis.com/books/v1/volumes?q=intitle:';
+    const searchBook = req.query.search;
+    console.log(`${googleUrl}dog&key=${G_API_KEY}`);
+    console.log(req.params);
+    console.log(req.query); //figure out how we will implement query and where
+    const string = `${googleUrl}cat&key=${G_API_KEY}`;
+    console.log(string);
+    superagent.get(string)
+        .end((err, resp) => {
+                console.log('this is console logging ' , resp.body);
+                const topTen = resp.body.items.slice(0,10).map( book =>{
+                    let returnData = {
+                        
+                        title: book.volumeInfo.title,
+                        author: book.volumeInfo.authors ? book.volumeInfo.authors[0] : 'NA',
+                        isbn: book.volumeInfo.industryIdentifiers ? book.volumeInfo.industryIdentifiers[0].identifier : 'NA',
+                        image_url: book.volumeInfo.imageLinks.thumbnail ? book.volumeInfo.imageLinks.thumbnail : 'NA' ,
+                        description: book.volumeInfo.description ? book.volumeInfo.description : 'NA' 
+
+
+                    };
+                    return returnData;
+                });
+                console.log(topTen);
+                
+            res.send(topTen);
+        });
 });
 
 app.post('/api/v1/new', (req, res) => {
@@ -64,7 +97,7 @@ app.delete('/api/v1/books/:id', (req, res) => {
     console.log('inside the server delete route')
     client.query(`
     DELETE FROM books
-    WHERE book_id = $1`,
+    WHERE book_id = $1;`,
     [
         req.params.id
     ])
