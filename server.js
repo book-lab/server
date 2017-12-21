@@ -32,14 +32,32 @@ app.get('/api/v1/book/:id', (req,res) => {
     
 });
 
+// app.get('/api/v1/nasa', (req, res) =>{
+//     const nasaUrl = 'https://api.nasa.gov/mars-photos/api/v1/rovers/curiosity/photos?earth_date=2014-08-15&camera=rhaz&api_key=hJBJ2YBwo2K4VGfoZFoKtxvICroQ4cg4qMb9HpTT';
+//     superagent.get(nasaUrl)
+//         .end((err,resp) =>{
+//             const topTen = resp.body.photos.slice(0,10).map(image => {
+//                 let returnImg = {
+//                     id: image.id,
+//                     rover: image.rover.name,
+//                     image_url: image.img_src
+//                 };
+//                 return returnImg;
+//             });
+//             console.log(topTen);
+//             res.send(topTen);
+//         });
+
+// })
+
 app.get('/api/v1/search', (req, res) => {
     
     const googleUrl = 'https://www.googleapis.com/books/v1/volumes?q=intitle:';
-    const searchBook = req.query.search;
+    const searchBook = req.query.term
     console.log(`${googleUrl}dog&key=${G_API_KEY}`);
-    console.log(req.params);
+    console.log('this is search term ---------',searchBook);
     console.log(req.query); //figure out how we will implement query and where
-    const string = `${googleUrl}cat&key=${G_API_KEY}`;
+    const string = `${googleUrl}${searchBook}&key=${G_API_KEY}`;
     console.log(string);
     superagent.get(string)
         .end((err, resp) => {
@@ -50,14 +68,14 @@ app.get('/api/v1/search', (req, res) => {
                         title: book.volumeInfo.title,
                         author: book.volumeInfo.authors ? book.volumeInfo.authors[0] : 'NA',
                         isbn: book.volumeInfo.industryIdentifiers ? book.volumeInfo.industryIdentifiers[0].identifier : 'NA',
-                        image_url: book.volumeInfo.imageLinks.thumbnail ? book.volumeInfo.imageLinks.thumbnail : 'NA' ,
+                        image_url: book.volumeInfo.imageLinks ? book.volumeInfo.imageLinks.thumbnail : 'NA' ,
                         description: book.volumeInfo.description ? book.volumeInfo.description : 'NA' 
 
 
                     };
                     return returnData;
                 });
-                console.log(topTen);
+                // console.log(topTen);
                 
             res.send(topTen);
         });
@@ -118,7 +136,7 @@ function loadBooks() {
         JSON.parse(fd.toString()).forEach(ele => {
         
             client.query(
-                'INSERT INTO books(title, author, isbn, image_url, description) VALUES($1, $2, $3, $4, $5)',
+                'INSERT INTO books(title, author, isbn, image_url, description) VALUES($1, $2, $3, $4, $5) ON CONFLICT DO NOTHING',
                 [ele.title, ele.author, ele.isbn, ele.image_url, ele.description ]
             )
                 .catch(console.error);
@@ -126,4 +144,4 @@ function loadBooks() {
     });
 }
 
-loadBooks();
+// loadBooks();
