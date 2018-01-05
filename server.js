@@ -21,7 +21,7 @@ app.get('/api/v1/books', (req,res) => {
     //query database for all books 
     client.query(`SELECT book_id, title, author, isbn, image_url, description FROM books;`)
         .then(data => res.send(data.rows));
-    // res.send('will automatically send book data');
+    // res.send automatically sends book data
 });
 
 
@@ -32,31 +32,13 @@ app.get('/api/v1/book/:id', (req,res) => {
     
 });
 
-// app.get('/api/v1/nasa', (req, res) =>{
-//     const nasaUrl = 'https://api.nasa.gov/mars-photos/api/v1/rovers/curiosity/photos?earth_date=2014-08-15&camera=rhaz&api_key=hJBJ2YBwo2K4VGfoZFoKtxvICroQ4cg4qMb9HpTT';
-//     superagent.get(nasaUrl)
-//         .end((err,resp) =>{
-//             const topTen = resp.body.photos.slice(0,10).map(image => {
-//                 let returnImg = {
-//                     id: image.id,
-//                     rover: image.rover.name,
-//                     image_url: image.img_src
-//                 };
-//                 return returnImg;
-//             });
-//             console.log(topTen);
-//             res.send(topTen);
-//         });
-
-// })
-
 app.get('/api/v1/search', (req, res) => {
     
     const googleUrl = 'https://www.googleapis.com/books/v1/volumes?q=intitle:';
     const searchBook = req.query.term
     console.log(`${googleUrl}dog&key=${G_API_KEY}`);
     console.log('this is search term ---------',searchBook);
-    console.log(req.query); //figure out how we will implement query and where
+    console.log(req.query); 
     const string = `${googleUrl}${searchBook}&key=${G_API_KEY}`;
     console.log(string);
     superagent.get(string)
@@ -75,7 +57,6 @@ app.get('/api/v1/search', (req, res) => {
                     };
                     return returnData;
                 });
-                // console.log(topTen);
                 
             res.send(topTen);
         });
@@ -129,8 +110,6 @@ app.listen(PORT, () =>{
     console.log(`listening for api to port ${PORT}`);
 });
 
-//////////////////////////
-
 function loadBooks() {
     fs.readFile('./book.json', (err, fd) => {
         JSON.parse(fd.toString()).forEach(ele => {
@@ -144,4 +123,4 @@ function loadBooks() {
     });
 }
 
-// loadBooks();
+loadBooks();
