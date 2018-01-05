@@ -33,9 +33,9 @@ app.get('/api/v1/book/:id', (req,res) => {
 });
 
 app.get('/api/v1/search', (req, res) => {
-    
+
     const googleUrl = 'https://www.googleapis.com/books/v1/volumes?q=intitle:';
-    const searchBook = req.query.term
+    const searchBook = req.query.term;
     console.log(`${googleUrl}dog&key=${G_API_KEY}`);
     console.log('this is search term ---------',searchBook);
     console.log(req.query); 
@@ -46,18 +46,17 @@ app.get('/api/v1/search', (req, res) => {
                 console.log('this is console logging ' , resp.body);
                 const topTen = resp.body.items.slice(0,10).map( book =>{
                     let returnData = {
-                        
+
                         title: book.volumeInfo.title,
                         author: book.volumeInfo.authors ? book.volumeInfo.authors[0] : 'NA',
                         isbn: book.volumeInfo.industryIdentifiers ? book.volumeInfo.industryIdentifiers[0].identifier : 'NA',
                         image_url: book.volumeInfo.imageLinks ? book.volumeInfo.imageLinks.thumbnail : 'NA' ,
                         description: book.volumeInfo.description ? book.volumeInfo.description : 'NA' 
 
-
-                    };
-                    return returnData;
-                });
-                console.log(topTen);
+                };
+                 return returnData;
+              });
+              //console.log(topTen);
                 
             res.send(topTen);
         });
@@ -104,8 +103,6 @@ app.delete('/api/v1/books/:id', (req, res) => {
     .then(data => res.status(204).send('book deleted'))
     .catch(console.error);
 });
-
-
 
 app.listen(PORT, () =>{
     console.log(`listening for api to port ${PORT}`);

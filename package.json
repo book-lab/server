@@ -25,5 +25,8 @@
     "fs": "0.0.1-security",
     "pg": "^7.4.0",
     "superagent": "^3.8.2"
+  },
+  "devDependencies": {
+    "eslint-config-google": "^0.9.1"
   }
 }
