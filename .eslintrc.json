@@ -1,4 +1,4 @@
-"extends": "eslint:recommended",
+"extend": "eslint:recommended",
 "parserOptions": {
   "ecmaVersion": 6,
   "ecmaFeatures": {"impliedStrict": true}
