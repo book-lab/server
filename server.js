@@ -12,7 +12,7 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 
-// 
+
 const PORT = process.env.PORT;
 const client = new pg.Client(process.env.DATABASE_URL);
 client.connect();
@@ -57,6 +57,7 @@ app.get('/api/v1/search', (req, res) => {
                     };
                     return returnData;
                 });
+                console.log(topTen);
                 
             res.send(topTen);
         });
